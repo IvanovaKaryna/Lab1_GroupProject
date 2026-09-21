@@ -1,16 +1,16 @@
 #pragma once
 
 #include <vector>
-#include <utility>
+#include <memory>
 
 struct InputData
 {
-    std::vector<std::vector<int>> graph;
+    std::vector<std::vector<int>> adjacencyList;
     int startVertex;
 };
 
 struct Result
 {
-    std::vector<int> order;
-    std::vector<int> reachable;
+    std::vector<int> traversalOrder;
+    std::vector<int> reachableVertices;
 };
