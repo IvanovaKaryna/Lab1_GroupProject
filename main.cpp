@@ -1,19 +1,18 @@
 #include "shared_types.h"
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 
-// Student A
 std::unique_ptr<Result> runStudentA(
     std::shared_ptr<const InputData> input);
 
-// Student B
 std::unique_ptr<Result> calculateB(
     std::shared_ptr<const InputData> data);
 
 int main()
 {
-    // Спільні вхідні дані
+
     auto input = std::make_shared<InputData>(
         InputData{
             {
@@ -26,48 +25,95 @@ int main()
             0
         }
     );
+    // Student a - bfs
 
-    // Алгоритм Student A — BFS
+    auto startBFS = std::chrono::high_resolution_clock::now();
+
     auto resultA = runStudentA(input);
 
-    auto& [traversalOrder, reachableVertices] = *resultA;
+    auto endBFS = std::chrono::high_resolution_clock::now();
+
+    auto bfsTime =
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            endBFS - startBFS
+        ).count();
+
+    auto& [traversalOrderA, reachableVerticesA] = *resultA;
 
     std::cout << "BFS traversal: ";
 
-    for (int vertex : traversalOrder)
+    for (int vertex : traversalOrderA)
     {
         std::cout << vertex << ' ';
     }
 
     std::cout << "\nReachable vertices: ";
 
-    for (int vertex : reachableVertices)
+    for (int vertex : reachableVerticesA)
     {
         std::cout << vertex << ' ';
     }
 
-    std::cout << '\n';
+    std::cout << "\nVisited vertices: "
+        << reachableVerticesA.size();
 
-    // Алгоритм Student B — DFS
+    std::cout << "\nExecution time: "
+        << bfsTime << " microseconds\n";
+
+    // Student b dfs
+
+    auto startDFS = std::chrono::high_resolution_clock::now();
+
     auto resultB = calculateB(input);
 
-    auto [orderB, reachableB] = *resultB;
+    auto endDFS = std::chrono::high_resolution_clock::now();
 
-    std::cout << "\nDFS traversal order: ";
+    auto dfsTime =
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            endDFS - startDFS
+        ).count();
 
-    for (int vertex : orderB)
+    auto& [traversalOrderB, reachableVerticesB] = *resultB;
+
+    std::cout << "\nDFS traversal: ";
+
+    for (int vertex : traversalOrderB)
     {
         std::cout << vertex << ' ';
     }
 
     std::cout << "\nReachable vertices: ";
 
-    for (int vertex : reachableB)
+    for (int vertex : reachableVerticesB)
     {
         std::cout << vertex << ' ';
     }
 
-    std::cout << '\n';
+    std::cout << "\nVisited vertices: "
+        << reachableVerticesB.size();
+
+    std::cout << "\nExecution time: "
+        << dfsTime << " microseconds\n";
+
+    std::cout << "\n=== Comparison ===\n";
+
+    std::cout << "Traversal orders are "
+        << (traversalOrderA == traversalOrderB
+            ? "the same"
+            : "different")
+        << ".\n";
+
+    std::cout << "BFS visited vertices: "
+        << reachableVerticesA.size() << '\n';
+
+    std::cout << "DFS visited vertices: "
+        << reachableVerticesB.size() << '\n';
+
+    std::cout << "BFS execution time: "
+        << bfsTime << " microseconds\n";
+
+    std::cout << "DFS execution time: "
+        << dfsTime << " microseconds\n";
 
     return 0;
 }
